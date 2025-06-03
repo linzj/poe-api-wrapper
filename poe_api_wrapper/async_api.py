@@ -560,6 +560,8 @@ class AsyncPoeApi:
                 f"Bot {handle} not found. Make sure the bot exists before creating new chat."
             )
         botData = response_json['data']['bot']
+        if not botData:
+            return None
         data = {
                 'handle': botData['handle'],
                 'model':botData['model'],
@@ -743,11 +745,8 @@ class AsyncPoeApi:
                 attachments.append(f'file{i}')
         
         botInfo = await self.get_botInfo(bot)
-        msgPrice = botInfo.get('displayMessagePointPrice')
-        if not botInfo:
-            raise ValueError(
-                f"Failed to get bot info for {bot}. Make sure the bot exists before creating new chat."
-            )
+        if botInfo:
+            msgPrice = botInfo.get('displayMessagePointPrice')
         
         if (chatId == None and chatCode == None):
             try:
