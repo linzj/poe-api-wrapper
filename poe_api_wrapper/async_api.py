@@ -75,6 +75,7 @@ class AsyncPoeApi:
             self.client.headers.update({
                 'Poe-Formkey': self.formkey,
             })
+        self.last_chat_id: int = None
         
     async def create(self):
         if self.formkey == "":
@@ -529,7 +530,7 @@ class AsyncPoeApi:
     async def get_threadData(self, bot: str="", chatCode: str=None, chatId: int=None):
         id = None
         title = None
-        if bot not in self.current_thread or len(self.current_thread[bot]) <= 1:
+        if bot not in self.current_thread or len(self.current_thread[bot]) < 1:
             temp = await self.get_chat_history(bot=bot)
             self.current_thread[bot] = temp['data'][bot]
         if chatCode != None:
@@ -798,6 +799,7 @@ class AsyncPoeApi:
                 chatCode = message_data['chatCode']
                 chatId = message_data['chatId']
                 title = message_data['title']
+                self.last_chat_id = chatId
                 if bot not in self.current_thread:
                     self.current_thread[bot] = [{'chatId': chatId, 'chatCode': chatCode, 'id': message_data['id'], 'title': message_data['title']}]
                 elif self.current_thread[bot] == []:
